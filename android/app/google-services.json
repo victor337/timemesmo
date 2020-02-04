@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "401155358184",
+    "firebase_url": "https://timemesmo.firebaseio.com",
+    "project_id": "timemesmo",
+    "storage_bucket": "timemesmo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:401155358184:android:abc8c45754c40b99a8785d",
+        "android_client_info": {
+          "package_name": "br.com.barbosa.timemesmo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "401155358184-bqaus7o3v5m3jk5fkau636pd0huspm7k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2Lrs9suTfwq5tIV-BiEpr7bvrm6nNp3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "401155358184-bqaus7o3v5m3jk5fkau636pd0huspm7k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
