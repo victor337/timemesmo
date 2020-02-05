@@ -227,21 +227,70 @@ class _BancoDadosState extends State<BancoDados> {
   Widget build(BuildContext context) {
 
     TextEditingController teste = TextEditingController();
+    TextEditingController amarelo = TextEditingController();
+    TextEditingController vermelho = TextEditingController();
+
+    final _formkey = GlobalKey<FormState>();
 
     addteste(int atual, String user){
       showDialog(
         context: context,
         child: AlertDialog(
           contentPadding: EdgeInsets.all(20),
-          title: Text("Quantos gols?"),
-          content: TextFormField(
-            controller: teste,
-            decoration: InputDecoration(
-              hintText: "Digite aqui"
+          title: Text("Preencha as informações"),
+          content: Container(
+            padding: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height/2,
+            child: Form(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  TextFormField(
+                    controller: teste,
+                    decoration: InputDecoration(
+                      hintText: "Gols"
+                    ),
+                    style: TextStyle(color: Colors.black),
+                    keyboardType: TextInputType.number,
+                    validator: (text){
+                      if(text.isEmpty){
+                        return "Preencha! (se não houver coloque 0)";
+                      } return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: amarelo,
+                    decoration: InputDecoration(
+                      hintText: "Amarelos"
+                    ),
+                    style: TextStyle(color: Colors.black),
+                    keyboardType: TextInputType.number,
+                    validator: (text){
+                      if(text.isEmpty){
+                        return "Preencha! (se não houver coloque 0)";
+                      } else if(int.parse(text) >= 3){
+                        return "O máximo de amarelos por jogo são 2!";
+                      } return null;
+                    },
+                  ),
+                  TextFormField(
+                    controller: vermelho,
+                    decoration: InputDecoration(
+                      hintText: "Vermelhos"
+                    ),
+                    style: TextStyle(color: Colors.black),
+                    keyboardType: TextInputType.number,
+                    validator: (text){
+                      if(text.isEmpty){
+                        return "Preencha! (se não houver coloque 0)";
+                      } else if(int.parse(text) >= 3){
+                        return "O máximo de vermelhos por jogo são 1!";
+                      } return null;
+                    },
+                  ),
+                ],
+              ),
             ),
-            style: TextStyle(color: Colors.black),
-            keyboardType: TextInputType.number,
-            
           ),
           actions: <Widget>[
             FlatButton(
@@ -252,13 +301,19 @@ class _BancoDadosState extends State<BancoDados> {
             ),
             FlatButton(
               onPressed: (){
-                Navigator.pop(context);
-                int gols = int.parse(teste.text);
-                gols += atual;
-                Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
-                  "Gols": gols
-                });
-                Navigator.pop(context);
+                if(_formkey.currentState.validate()){
+                  Navigator.pop(context);
+                  int gols = int.parse(teste.text);
+                  int vermelhocerto = int.parse(vermelho.text);
+                  int amarelocerto = int.parse(amarelo.text);
+                  gols += atual;
+                  Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
+                    "Gols": gols,
+                    "Amarelo": amarelocerto,
+                    "Vermelho": vermelhocerto
+                  });
+                  Navigator.pop(context);
+                  }
               },
               child: Text("Confirmar", style: TextStyle(color: Colors.green),),
             )

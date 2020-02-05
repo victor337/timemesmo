@@ -33,6 +33,12 @@ class _EditarDadosState extends State<EditarDados> {
   var _itemSelecionado = 'Titular';
   var _nsei = ['Goleiro', 'Zagueiro', 'Lateral', 'Volante', 'Meio-Campo', 'Meia-Atacante', 'Atacante', 'Centroavante'];
   var _nsein = 'Meio-Campo';
+
+  var _amareloopcoes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  var _amarelo = '0';
+
+  var _vermelhoopcoes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  var _vermelho = '0';
   
 
   
@@ -64,9 +70,13 @@ class _EditarDadosState extends State<EditarDados> {
       nome.text = "";
       cont.text = "";
       cami.text = "";
+      setState(() {
+        _amarelo = "0";
+        _vermelho = "0";
+      });
     }
 
-    void sendImgSt(String user, int gols, String nome, String posi, String esca, String numero, String camisa,)async{
+    void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa,)async{
 
       Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.data["Nome"]).updateData(
         {
@@ -75,7 +85,9 @@ class _EditarDadosState extends State<EditarDados> {
           "Nº da camisa": camisa,
           "Escalado": esca,
           "Contato": numero,
-          "Gols": gols
+          "Gols": gols,
+          "Amarelos": amarelo,
+          "Vermelhos": vermelho
         }
         );
 
@@ -154,7 +166,9 @@ class _EditarDadosState extends State<EditarDados> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15)
                         ),
-                        child: Column(
+                        child: Form(
+                          key: _formkey,
+                          child: Column(
                           children: <Widget>[
                             TextFormField(
                             controller: nome,
@@ -224,7 +238,62 @@ class _EditarDadosState extends State<EditarDados> {
                           } ,
                         ),
                           ],
+                        )
                         ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white
+                        ),
+                        child: Column(
+                        children: <Widget>[
+                          Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Text("Amarelos"),
+                              DropdownButton<String>(
+                                items: _amareloopcoes.map((String dropDownStringItem){
+                                  return DropdownMenuItem<String>(
+                                    value: dropDownStringItem,
+                                    child: Text(dropDownStringItem),
+                                  );
+                                }).toList(),
+                                onChanged: (String novoValor){
+                                  setState(() {
+                                    this._amarelo = novoValor;
+                                  });
+                                },
+                                value: _amarelo,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text("Vermelhos"),
+                              DropdownButton<String>(
+                                items: _vermelhoopcoes.map((String sdropDownStringItem){
+                                  return DropdownMenuItem<String>(
+                                    value: sdropDownStringItem,
+                                    child: Text(sdropDownStringItem),
+                                  );
+                                }).toList(),
+                                onChanged: (String snovoValor){
+                                  setState(() {
+                                    this._vermelho = snovoValor;
+                                  });
+                                },
+                                value: _vermelho,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                        ],
+                      ),
                       ),
                         SizedBox(height: 25,),
                       Container(
@@ -238,8 +307,10 @@ class _EditarDadosState extends State<EditarDados> {
                               String contato = cont.text;
                               String ncamisa = cami.text;
                               int novo = int.parse(gols.text);
+                              int amarelo = int.parse(_amarelo);
+                              int vermelho = int.parse(_vermelho);
                               
-                              sendImgSt(model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa,);
+                              sendImgSt(amarelo, vermelho, model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa,);
                               resetCamps();
                               dialogolo(jogador);
                             }

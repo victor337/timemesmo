@@ -121,7 +121,29 @@ class _DadosJogadorState extends State<DadosJogador> {
                               Text("Nº ${snapshot.data["Nº da camisa"]}", style: TextStyle(fontSize: 21),),
                               Divider(),
                               Text("Gols marcados: ${snapshot.data["Gols"]}", style: TextStyle(fontSize: 21),),
-                              Divider(),                          
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height: 30,
+                                    child: Image.asset("assets/cartao-amarelo.png", fit: BoxFit.cover,),
+                                  ),
+                                  Text(snapshot.data["Amarelos"], style: TextStyle(fontSize: 21),)
+                                ],
+                              ),
+                              Divider(),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height: 30,
+                                    child: Image.asset("assets/cartao-vermelho.png", fit: BoxFit.cover,),
+                                  ),
+                                  Text(snapshot.data["Vermelhos"], style: TextStyle(fontSize: 21),)
+                                ],
+                              ),
+                              Divider(),
                               GestureDetector(
                                 onTap: (){
                                   launch("tel:${snapshot.data["Contato"]}");

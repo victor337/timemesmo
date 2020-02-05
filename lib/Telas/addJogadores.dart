@@ -25,10 +25,18 @@ class _AddJogadoresState extends State<AddJogadores> {
   
   String escalado;
   File imagem;
+
   var _opcao = ['Titular', 'Reserva'];
   var _itemSelecionado = 'Titular';
+
   var _nsei = ['Goleiro', 'Zagueiro', 'Lateral', 'Volante', 'Meio-Campo', 'Meia-Atacante', 'Atacante', 'Centroavante'];
   var _nsein = 'Meio-Campo';
+
+  var _amareloopcoes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  var _amarelo = '0';
+
+  var _vermelhoopcoes = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+  var _vermelho = '0';
   
 
   
@@ -90,10 +98,12 @@ class _AddJogadoresState extends State<AddJogadores> {
       gols.text = "";
       setState(() {
         imagem = null;
+        _vermelho = "0";
+        _amarelo = "0";
       });
     }
 
-    void sendImgSt(String user, int gols, String nome, String posi, String esca, String numero, String camisa, [File imgFile])async{
+    void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa, [File imgFile])async{
 
       Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(nome).setData(
         {
@@ -102,7 +112,9 @@ class _AddJogadoresState extends State<AddJogadores> {
           "Nº da camisa": camisa,
           "Escalado": esca,
           "Contato": numero,
-          "Gols": gols
+          "Gols": gols,
+          "Amarelos": amarelo,
+          "Vermelhos": vermelho,
         }
         );
 
@@ -283,6 +295,60 @@ class _AddJogadoresState extends State<AddJogadores> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white
+                        ),
+                        child: Column(
+                        children: <Widget>[
+                          Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Column(
+                            children: <Widget>[
+                              Text("Amarelos"),
+                              DropdownButton<String>(
+                                items: _amareloopcoes.map((String dropDownStringItem){
+                                  return DropdownMenuItem<String>(
+                                    value: dropDownStringItem,
+                                    child: Text(dropDownStringItem),
+                                  );
+                                }).toList(),
+                                onChanged: (String novoValor){
+                                  setState(() {
+                                    this._amarelo = novoValor;
+                                  });
+                                },
+                                value: _amarelo,
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Text("Vermelhos"),
+                              DropdownButton<String>(
+                                items: _vermelhoopcoes.map((String sdropDownStringItem){
+                                  return DropdownMenuItem<String>(
+                                    value: sdropDownStringItem,
+                                    child: Text(sdropDownStringItem),
+                                  );
+                                }).toList(),
+                                onChanged: (String snovoValor){
+                                  setState(() {
+                                    this._vermelho = snovoValor;
+                                  });
+                                },
+                                value: _vermelho,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                        ],
+                      ),
+                      ),
                         SizedBox(height: 25,),
                       Container(
                         height: 45,
@@ -298,8 +364,10 @@ class _AddJogadoresState extends State<AddJogadores> {
                               String contato = cont.text;
                               String ncamisa = cami.text;
                               int novo = int.parse(gols.text);
+                              int amarelo = int.parse(_amarelo);
+                              int vermelho = int.parse(_vermelho);
                               
-                              sendImgSt(model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa, imagem,);
+                              sendImgSt(amarelo, vermelho ,model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa, imagem,);
                               resetCamps();
                               dialogolo(jogador);
                             }

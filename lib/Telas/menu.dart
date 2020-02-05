@@ -64,6 +64,16 @@ class _MenuState extends State<Menu> {
                 ],
               );
             } else {
+
+              int pegarnum;
+
+              pegar()async{
+                int ganhos = await Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Ganhos").snapshots().length;
+                int perdidos = await Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Perdidos").snapshots().length;
+                pegarnum = (ganhos * 100 / perdidos) as int;
+                return pegarnum;
+                }
+
               return SingleChildScrollView(
                 child: Container(
                   child: Column(
@@ -161,20 +171,7 @@ class _MenuState extends State<Menu> {
                                             ),
                                             Padding(
                                               padding: const EdgeInsets.only(right: 16),
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text('Following',
-                                                    style: TextStyle(
-                                                      color: Colors.white
-                                                    ),
-                                                  ),
-                                                  Text('18',
-                                                    style: TextStyle(
-                                                      color: Colors.white
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                              child: JogadorTotal()
                                             )
                                           ],
                                         ),
@@ -204,18 +201,33 @@ class _MenuState extends State<Menu> {
                                             borderRadius: BorderRadius.circular(15)
                                           ),
                                           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          child: Column(
                                             children: <Widget>[
-                                              Ganhos(),
-                                              Perdidos(),
-                                              Empates()
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Ganhos(),
+                                                  Perdidos(),
+                                                  Empates(),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: <Widget>[
+                                                  Text("Porcentagem de viória"),
+                                                  GestureDetector(
+                                                    child: Text("Clique aqui"),
+                                                    onTap: (){
+                                                      pegar();
+                                                      return Text(pegarnum.toString());
+                                                    },
+                                                  )
+                                                ],
+                                              )
                                             ],
-                                          ),
+                                          )
                                         ),
                                       ],
                                     ),
-                                    
                                   ),
                                 ],
                               ),
@@ -342,7 +354,7 @@ class Perdidos extends StatelessWidget {
             } else if(snapshot.data.documents.length == 0){
               return Column(
                   children: <Widget>[
-                    Text("Vitórias", style: TextStyle(color: Colors.green),),
+                    Text("Derrotas", style: TextStyle(color: Colors.red),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
@@ -377,7 +389,7 @@ class Empates extends StatelessWidget {
             } else if(snapshot.data.documents.length == 0){
               return Column(
                   children: <Widget>[
-                    Text("Vitórias", style: TextStyle(color: Colors.green),),
+                    Text("Empates", style: TextStyle(color: Colors.grey),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
@@ -386,6 +398,33 @@ class Empates extends StatelessWidget {
             return Column(
                   children: <Widget>[
                     Text("Empates", style: TextStyle(color: Colors.grey),),
+                    SizedBox(height: 5),
+                    Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
+                  ],
+                );
+          },
+        );
+      },
+    );
+  }
+}
+
+class JogadorTotal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ScopedModelDescendant<UserModel>(
+      builder: (context, child, model){
+        return FutureBuilder<QuerySnapshot>(
+          future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Jogadores").getDocuments(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData){
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Column(
+                  children: <Widget>[
+                    Text("Jogadores", style: TextStyle(color: Colors.black),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
