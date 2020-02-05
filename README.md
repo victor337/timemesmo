@@ -1,6 +1,6 @@
 # timemesmo
 
-Aplicativo para monstar seu time, seus jogadores e jogos!
+Aplicativo para montar seu time, seus jogadores e jogos!
 
 ## Getting Started
 
