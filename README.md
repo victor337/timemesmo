@@ -1,6 +1,6 @@
 # timemesmo
 
-A new Flutter application.
+Aplicativo para montar seu time, seus jogadores e jogos!
 
 ## Getting Started
 
