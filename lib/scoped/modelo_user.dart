@@ -12,6 +12,12 @@ class UserModel extends Model {
 
   bool carregando = false;
 
+  int pegarnum;
+
+  notify()async{
+    notifyListeners();
+  }
+
 
   pegar()async{
     firebaseUser = await FirebaseAuth.instance.currentUser();

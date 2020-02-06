@@ -1,7 +1,10 @@
 
 import 'dart:io';
+import 'package:timemesmo/SegundasTelas/derrotas.dart';
+import 'package:timemesmo/SegundasTelas/empatados.dart';
 import 'package:timemesmo/SegundasTelas/escalar.dart';
 import 'package:timemesmo/SegundasTelas/historico.dart';
+import 'package:timemesmo/SegundasTelas/vitorias.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -64,16 +67,6 @@ class _MenuState extends State<Menu> {
                 ],
               );
             } else {
-
-              int pegarnum;
-
-              pegar()async{
-                int ganhos = await Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Ganhos").snapshots().length;
-                int perdidos = await Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Perdidos").snapshots().length;
-                pegarnum = (ganhos * 100 / perdidos) as int;
-                return pegarnum;
-                }
-
               return SingleChildScrollView(
                 child: Container(
                   child: Column(
@@ -153,17 +146,19 @@ class _MenuState extends State<Menu> {
                                                     border: Border.all(width: 1),
                                                     color: Colors.grey[300],
                                                   ),
-                                                  child: snapshot.data["img"] == null ? Text("Envie uma foto") : Image.network(snapshot.data["img"], fit: BoxFit.cover,),
+                                                  child: snapshot.data["img"] == null ? Center(child: Text("Envie uma foto")) : 
+                                                  Container(height: 120, width: 120, child: CircleAvatar(backgroundImage: NetworkImage(snapshot.data["img"])),) 
                                                 ),
                                               ),
                                             ),
                                             FlatButton(
-                                              child: Text("Enviar foto"),
+                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.grey : Colors.white)),
                                               onPressed: (){
                                                 if(imagem == null){
                                                   return null;
                                                 } else{
                                                   sendImgSt(model.firebaseUser.uid, "Brasão" , imagem);
+                                                  model.notify();
                                                 }
                                               }
                                             )
@@ -206,23 +201,32 @@ class _MenuState extends State<Menu> {
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: <Widget>[
-                                                  Ganhos(),
-                                                  Perdidos(),
-                                                  Empates(),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.of(context).push(
+                                                        MaterialPageRoute(builder: (context) => Vitorias())
+                                                      );
+                                                    },
+                                                    child: Ganhos(),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.of(context).push(
+                                                        MaterialPageRoute(builder: (context) => Derrotas())
+                                                      );
+                                                    },
+                                                    child: Perdidos(),
+                                                  ),
+                                                   GestureDetector(
+                                                    onTap: (){
+                                                      Navigator.of(context).push(
+                                                        MaterialPageRoute(builder: (context) => Empatados())
+                                                      );
+                                                    },
+                                                    child: Empates(),
+                                                  ),                                                  
                                                 ],
                                               ),
-                                              Column(
-                                                children: <Widget>[
-                                                  Text("Porcentagem de viória"),
-                                                  GestureDetector(
-                                                    child: Text("Clique aqui"),
-                                                    onTap: (){
-                                                      pegar();
-                                                      return Text(pegarnum.toString());
-                                                    },
-                                                  )
-                                                ],
-                                              )
                                             ],
                                           )
                                         ),
@@ -233,64 +237,63 @@ class _MenuState extends State<Menu> {
                               ),
                             ),
                             Container(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            
-                            SizedBox(height: 10,),
-                            Card(
-                                  color: Colors.transparent,
-                                  elevation: 10,
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    padding: EdgeInsets.all(5),
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: FlatButton(
-                                      onPressed: (){
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => Escalar())
-                                        );
-                                      },
-                                      child: Text("ADICIONAR JOGO", style: TextStyle(color: Colors.white, fontSize: 23),),
-                                    ),
-                                  ),
+                              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[                            
+                                    SizedBox(height: 10,),
+                                    Card(
+                                          color: Colors.transparent,
+                                          elevation: 10,
+                                          child: Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.all(5),
+                                            width: MediaQuery.of(context).size.width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: (){
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => Escalar())
+                                                );
+                                              },
+                                              child: Text("ADICIONAR JOGO", style: TextStyle(color: Colors.white, fontSize: 23),),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 5,),
+                                        Card(
+                                          color: Colors.transparent,
+                                          elevation: 10,
+                                          child: Container(
+                                            margin: EdgeInsets.all(10),
+                                            padding: EdgeInsets.all(5),
+                                            width: MediaQuery.of(context).size.width,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            child: FlatButton(
+                                              onPressed: (){
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(builder: (context) => Historico())
+                                                );
+                                              },
+                                              child: Text("HISTÓRICO DE JOGOS", style: TextStyle(color: Colors.white, fontSize: 23)),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 20,),
+                                  ],
                                 ),
-                                SizedBox(height: 5,),
-                                Card(
-                                  color: Colors.transparent,
-                                  elevation: 10,
-                                  child: Container(
-                                    margin: EdgeInsets.all(10),
-                                    padding: EdgeInsets.all(5),
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(10)
-                                    ),
-                                    child: FlatButton(
-                                      onPressed: (){
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(builder: (context) => Historico())
-                                        );
-                                      },
-                                      child: Text("HISTÓRICO DE JOGOS", style: TextStyle(color: Colors.white, fontSize: 23)),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 20,),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  
-                ],
-              ),
+                              )
+                            ],
+                          ),
+                          
+                        ],
+                      ),
                     ],
                   )
                 )
@@ -424,9 +427,9 @@ class JogadorTotal extends StatelessWidget {
             }
             return Column(
                   children: <Widget>[
-                    Text("Jogadores", style: TextStyle(color: Colors.black),),
+                    Text("Jogadores", style: TextStyle(color: Colors.white),),
                     SizedBox(height: 5),
-                    Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
+                    Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.white),),
                   ],
                 );
           },

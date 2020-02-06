@@ -112,7 +112,6 @@ class _EditarDadosState extends State<EditarDados> {
               Container(
                 padding: EdgeInsets.all(20),
                 child: Form(
-                  key: _formkey,
                   child: ListView(
                     children: <Widget>[
                       SizedBox(height: 20),
@@ -243,6 +242,7 @@ class _EditarDadosState extends State<EditarDados> {
                       ),
                       SizedBox(height: 10),
                       Container(
+                        padding: EdgeInsets.only(top: 5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: Colors.white

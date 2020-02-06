@@ -32,7 +32,17 @@ class _DadosPartidaState extends State<DadosPartida> {
   }
   
 
-  excluir(String user){
+
+    excluir(String user, String result){
+
+      if(result == "Vitoria"){
+        result = "Ganhos";
+      } else if(result == "Derrota"){
+        result = "Perdidos";
+      } else{
+        result = "Empates";
+      }
+
       showDialog(
         context: context,
         child: AlertDialog(
@@ -49,6 +59,7 @@ class _DadosPartidaState extends State<DadosPartida> {
             FlatButton(
               onPressed: (){
                 Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(snapshot.documentID).delete();
+                Firestore.instance.collection("Usuarios").document(user).collection(result).document(snapshot.documentID).delete();
                 Navigator.pop(context);
                 Navigator.pop(context);
                 Navigator.pop(context);
@@ -143,7 +154,9 @@ class _DadosPartidaState extends State<DadosPartida> {
                     ListaJoga(snapshot),
                     RaisedButton(
                       color: Colors.red,
-                      onPressed: () { excluir(model.firebaseUser.uid) ; },
+                      onPressed: () { 
+                        excluir(model.firebaseUser.uid, snapshot.data["Resultado"]);
+                      },
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         margin: EdgeInsets.only(top: 10, bottom: 10),
@@ -187,20 +200,19 @@ class _ListaJogaState extends State<ListaJoga> {
           builder: (context, snapshot){
             if(!snapshot.hasData){
               return Center(
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                      ),
-                    );            } 
-            else 
-            {
-              print(snapshot.data.documents);
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                );
+              } 
+            else {
               return Column(
-                          children: snapshot.data.documents.map(
-                          (doc){
-                            return BancoDados(doc);
-                          }).toList(),
-                            );
-        }
+                children: snapshot.data.documents.map(
+                  (doc){
+                    return BancoDados(doc);
+                  }).toList(),
+                );
+            }
       },
     );
       },
@@ -231,6 +243,7 @@ class _BancoDadosState extends State<BancoDados> {
     TextEditingController vermelho = TextEditingController();
 
     final _formkey = GlobalKey<FormState>();
+    final _scakey = GlobalKey<ScaffoldState>();
 
     addteste(int atual, String user){
       showDialog(
@@ -240,8 +253,9 @@ class _BancoDadosState extends State<BancoDados> {
           title: Text("Preencha as informações"),
           content: Container(
             padding: EdgeInsets.all(10),
-            height: MediaQuery.of(context).size.height/2,
+            height: _scakey.currentContext.size.height/2,
             child: Form(
+              key: _formkey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[

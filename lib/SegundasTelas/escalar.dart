@@ -202,7 +202,7 @@ class _EscalarState extends State<Escalar> {
                         child: Image.asset("assets/campo.jpg", fit: BoxFit.cover,),
                       ),
                       Container(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.all(2),
                         child: ListView(
                         children: <Widget>[
                           Container(
@@ -225,6 +225,22 @@ class _EscalarState extends State<Escalar> {
                                 return BancoEscalar(doc);
                               }).toList(),
                                 )
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(5)
+                              ),
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text("Atenção"),
+                                  SizedBox(height: 5),
+                                  Text("Os jogos não podem ter o meso nome, caso adicione um jogo cujo o nome já exista, ele será substituido pelo novo", textAlign: TextAlign.center,)
+                                ],
+                              ),
                             ),
                             Container(
                               

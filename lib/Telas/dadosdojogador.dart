@@ -120,7 +120,7 @@ class _DadosJogadorState extends State<DadosJogador> {
                               Divider(),
                               Text("Nº ${snapshot.data["Nº da camisa"]}", style: TextStyle(fontSize: 21),),
                               Divider(),
-                              Text("Gols marcados: ${snapshot.data["Gols"]}", style: TextStyle(fontSize: 21),),
+                              Text("Gols marcados: ${snapshot.data["Gols"].toString()}", style: TextStyle(fontSize: 21),),
                               Divider(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -129,7 +129,7 @@ class _DadosJogadorState extends State<DadosJogador> {
                                     height: 30,
                                     child: Image.asset("assets/cartao-amarelo.png", fit: BoxFit.cover,),
                                   ),
-                                  Text(snapshot.data["Amarelos"], style: TextStyle(fontSize: 21),)
+                                  Text(snapshot.data["Amarelos"].toString(), style: TextStyle(fontSize: 21),)
                                 ],
                               ),
                               Divider(),
@@ -140,7 +140,7 @@ class _DadosJogadorState extends State<DadosJogador> {
                                     height: 30,
                                     child: Image.asset("assets/cartao-vermelho.png", fit: BoxFit.cover,),
                                   ),
-                                  Text(snapshot.data["Vermelhos"], style: TextStyle(fontSize: 21),)
+                                  Text(snapshot.data["Vermelhos"].toString(), style: TextStyle(fontSize: 21),)
                                 ],
                               ),
                               Divider(),

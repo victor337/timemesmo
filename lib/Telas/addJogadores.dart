@@ -118,7 +118,7 @@ class _AddJogadoresState extends State<AddJogadores> {
         }
         );
 
-      StorageUploadTask task = FirebaseStorage.instance.ref().child(user).child(nome)
+      StorageUploadTask task = FirebaseStorage.instance.ref().child(user).child("Jogadores").child(nome)
       .child(DateTime.now().millisecondsSinceEpoch.toString()).putFile(imgFile);
       
       StorageTaskSnapshot taskSnapshot = await task.onComplete;
@@ -297,6 +297,7 @@ class _AddJogadoresState extends State<AddJogadores> {
                       ),
                       SizedBox(height: 10),
                       Container(
+                        padding: EdgeInsets.only(top: 5),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: Colors.white
