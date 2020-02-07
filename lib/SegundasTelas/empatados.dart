@@ -40,7 +40,7 @@ class Empatados extends StatelessWidget {
                   child: Container(
                     color: Colors.grey,
                     padding: EdgeInsets.all(10),
-                    child: Text("Você não tem nenhuma partida ganha", style: TextStyle(color:Colors.white),)
+                    child: Text("Você não tem nenhuma partida empatada", style: TextStyle(color:Colors.white),)
                   )
                 ),
               ),

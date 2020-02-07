@@ -144,15 +144,15 @@ class _AddJogadoresState extends State<AddJogadores> {
                 child: Image.asset("assets/fundofundo.jpeg", fit: BoxFit.cover,),
               ),      
               Container(
-                padding: EdgeInsets.all(20),
                 child: Form(
                   key: _formkey,
                   child: ListView(
                     children: <Widget>[
                       SizedBox(height: 20),
                       Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(5),
                           color: Colors.white
                         ),
                         child: Column(
@@ -219,10 +219,11 @@ class _AddJogadoresState extends State<AddJogadores> {
                       ),
                       SizedBox(height: 10,),
                       Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 30),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(15)
+                          borderRadius: BorderRadius.circular(5)
                         ),
                         child: Column(
                           children: <Widget>[
@@ -297,9 +298,9 @@ class _AddJogadoresState extends State<AddJogadores> {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        padding: EdgeInsets.only(top: 5),
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(5),
                           color: Colors.white
                         ),
                         child: Column(
@@ -307,9 +308,10 @@ class _AddJogadoresState extends State<AddJogadores> {
                           Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Column(
+                          Row(
                             children: <Widget>[
                               Text("Amarelos"),
+                              SizedBox(width: 10),
                               DropdownButton<String>(
                                 items: _amareloopcoes.map((String dropDownStringItem){
                                   return DropdownMenuItem<String>(
@@ -326,9 +328,11 @@ class _AddJogadoresState extends State<AddJogadores> {
                               ),
                             ],
                           ),
-                          Column(
+                          SizedBox(width: 5,),
+                          Row(
                             children: <Widget>[
                               Text("Vermelhos"),
+                              SizedBox(width: 10),
                               DropdownButton<String>(
                                 items: _vermelhoopcoes.map((String sdropDownStringItem){
                                   return DropdownMenuItem<String>(
@@ -352,6 +356,7 @@ class _AddJogadoresState extends State<AddJogadores> {
                       ),
                         SizedBox(height: 25,),
                       Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         height: 45,
                         child: RaisedButton(
                         elevation: 5,

@@ -132,6 +132,8 @@ class _DadosPartidaState extends State<DadosPartida> {
                               ),
                               Divider(),
                               Text("Campo: ${snapshot.data["Campo"]}", style: TextStyle(fontSize: 21),),
+                              Divider(),
+                              Text("Faltas: ${snapshot.data["Faltas"]}", style: TextStyle(fontSize: 21),)
                             ],
                           ),
                         ),
@@ -148,7 +150,7 @@ class _DadosPartidaState extends State<DadosPartida> {
                         border: Border.all(width: 1)
                       ),
                       child: Center(
-                        child: Text("Clique em quem fez os gols", style: TextStyle(fontSize: 20, color: Colors.white),),
+                        child: Text("Clique para adicionar\nGols e cartões", textAlign: TextAlign.center, style: TextStyle(fontSize: 20, color: Colors.white),),
                       )
                     ),
                     ListaJoga(snapshot),
@@ -243,7 +245,6 @@ class _BancoDadosState extends State<BancoDados> {
     TextEditingController vermelho = TextEditingController();
 
     final _formkey = GlobalKey<FormState>();
-    final _scakey = GlobalKey<ScaffoldState>();
 
     addteste(int atual, String user){
       showDialog(
@@ -252,10 +253,11 @@ class _BancoDadosState extends State<BancoDados> {
           contentPadding: EdgeInsets.all(20),
           title: Text("Preencha as informações"),
           content: Container(
+            height: MediaQuery.of(context).size.height/3,
             padding: EdgeInsets.all(10),
-            height: _scakey.currentContext.size.height/2,
             child: Form(
               key: _formkey,
+              
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -403,7 +405,9 @@ class _BancoDadosState extends State<BancoDados> {
                 backgroundImage: AssetImage("assets/person-male.png"),
               ),
               title: Text(snapshot.data["Nome"]),
-              onTap: () { addteste(snapshot.data["Gols"], model.firebaseUser.uid) ; }
+              onTap: (){
+                addteste(snapshot.data["Gols"], model.firebaseUser.uid); 
+                }
             ),
           )
         ),

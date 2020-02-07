@@ -25,10 +25,13 @@ class _EscalarState extends State<Escalar> {
   var _resultado = ["Vitória", "Derrota", "Empate"];
   var _itemResultdo = "Vitória";
 
+  final _formkey = GlobalKey<FormState>();
+
   TextEditingController controllador = TextEditingController();
   TextEditingController campo = TextEditingController();
   TextEditingController timeadv = TextEditingController();
   TextEditingController jogo = TextEditingController();
+  TextEditingController faltas = TextEditingController();
 
 
   void resetCamps(){
@@ -119,43 +122,47 @@ class _EscalarState extends State<Escalar> {
               else 
               {
                 
-                void criarJogo(String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogo(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
-                    "Nome do jogo": jogo
+                    "Nome do jogo": jogo,
+                    "Faltas": faltas
                   });
                 }
 
-                void criarJogoGanho(String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoGanho(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Ganhos").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
-                    "Nome do jogo": jogo
+                    "Nome do jogo": jogo,
+                    "Faltas": faltas
                   });
                 }
 
-                void criarJogoPerdido(String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoPerdido(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Perdidos").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
-                    "Nome do jogo": jogo
+                    "Nome do jogo": jogo,
+                    "Faltas": faltas
                   });
                 }
 
-                void criarJogoEmpate(String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoEmpate(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Empates").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
-                    "Nome do jogo": jogo
+                    "Nome do jogo": jogo,
+                    "Faltas": faltas
                   });
                 }
 
@@ -203,7 +210,9 @@ class _EscalarState extends State<Escalar> {
                       ),
                       Container(
                         padding: EdgeInsets.all(2),
-                        child: ListView(
+                        child: Form(
+                          key: _formkey,
+                          child: ListView(
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(top: 10, left: 10, right: 10),
@@ -243,10 +252,30 @@ class _EscalarState extends State<Escalar> {
                               ),
                             ),
                             Container(
-                              
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width: 1)
+                              ),
+                              child: TextFormField(
+                                    controller: jogo,
+                                    decoration: InputDecoration(
+                                      hintText: "Nome do jogo",
+                                    ),
+                                    style: TextStyle(color: Colors.black),
+                                    cursorColor: Colors.white,
+                                    keyboardType: TextInputType.text,
+                                    validator: (text){
+                                      if (text.isEmpty){
+                                        return "Preencha!";
+                                      } return null;
+                                    }, 
+                                  ),
+                            ),
+                            Container(                              
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)
+                                borderRadius: BorderRadius.circular(10)
                               ),
                               padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
                               margin: EdgeInsets.all(10),
@@ -322,7 +351,7 @@ class _EscalarState extends State<Escalar> {
                                       hintText: "Campo", 
                                     ),
                                     style: TextStyle(color: Colors.black),
-                                    cursorColor: Colors.red,
+                                    cursorColor: Colors.blue,
                                     keyboardType: TextInputType.text,
                                     validator: (text){
                                       if (text.isEmpty){
@@ -337,7 +366,7 @@ class _EscalarState extends State<Escalar> {
                                       hintText: "Qual nome do time adversário?",
                                     ),
                                     style: TextStyle(color: Colors.black),
-                                    cursorColor: Colors.red,
+                                    cursorColor: Colors.blue,
                                     keyboardType: TextInputType.text,
                                     validator: (text){
                                       if (text.isEmpty){
@@ -346,22 +375,30 @@ class _EscalarState extends State<Escalar> {
                                     },
                                   ),
                                   SizedBox(height: 10,),
-                                  TextFormField(
-                                    controller: jogo,
+                                  
+                                ],
+                              )
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(width: 1)
+                              ),
+                              child: TextFormField(
+                                    controller: faltas,
                                     decoration: InputDecoration(
-                                      hintText: "Nome do jogo (Seu time vs Outro time)",
+                                      hintText: "Quantas faltas?",
                                     ),
                                     style: TextStyle(color: Colors.black),
-                                    cursorColor: Colors.red,
-                                    keyboardType: TextInputType.text,
+                                    cursorColor: Colors.blue,
+                                    keyboardType: TextInputType.number,
                                     validator: (text){
                                       if (text.isEmpty){
                                         return "Preencha!";
                                       } return null;
                                     }, 
                                   ),
-                                ],
-                              )
                             ),
                             SizedBox(height: 10,),
                             Container(
@@ -376,34 +413,36 @@ class _EscalarState extends State<Escalar> {
                               onPressed: (){
                                 if(jogadores.length == 0){
                                   dialogo();
-                                } else{
+                                } 
+                                if(_formkey.currentState.validate()){
+                                  int faltascerto = int.parse(faltas.text);
                                   if(_itemResultdo == "Vitória"){
-                                  criarJogoGanho(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJogo(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
-                                  resetCamps();
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => Historico())
-                                  );
+                                    criarJogoGanho(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
+                                    resetCamps();
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => Historico())
+                                    );
                                 } else if(_itemResultdo == "Derrota"){
-                                  criarJogoPerdido(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJogo(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
-                                  resetCamps();
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => Historico())
-                                  );
+                                    criarJogoPerdido(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
+                                    resetCamps();
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => Historico())
+                                    );
                                 } else {
-                                  criarJogoEmpate(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJogo(model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                  criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
-                                  resetCamps();
-                                  Navigator.pop(context);
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => Historico())
-                                  );
+                                    criarJogoEmpate(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
+                                    resetCamps();
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) => Historico())
+                                    );
                                 }
                                 }
                                 
@@ -429,6 +468,7 @@ class _EscalarState extends State<Escalar> {
                             )
                           ],
                         ),
+                        )
                   )
                 ],
               ),

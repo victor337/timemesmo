@@ -38,7 +38,7 @@ class Vitorias extends StatelessWidget {
               body: Container(
                 child: Center(
                   child: Container(
-                    color: Colors.green,
+                    color: Colors.white,
                     padding: EdgeInsets.all(10),
                     child: Text("Você não tem nenhuma partida ganha", style: TextStyle(color:Colors.white),)
                   )

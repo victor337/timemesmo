@@ -123,8 +123,8 @@ class _MenuState extends State<Menu> {
                                             Column(
                                               children: <Widget>[
                                                 Container(
-                                              height: 140,
-                                              width: 140,
+                                              height: 120,
+                                              width: 120,
                                               padding: EdgeInsets.all(5),
                                               child: GestureDetector(
                                                 onTap: ()async{
@@ -146,13 +146,13 @@ class _MenuState extends State<Menu> {
                                                     border: Border.all(width: 1),
                                                     color: Colors.grey[300],
                                                   ),
-                                                  child: snapshot.data["img"] == null ? Center(child: Text("Envie uma foto")) : 
+                                                  child: snapshot.data["img"] == null ? Center(child: Text("Envie uma brasão")) : 
                                                   Container(height: 120, width: 120, child: CircleAvatar(backgroundImage: NetworkImage(snapshot.data["img"])),) 
                                                 ),
                                               ),
                                             ),
                                             FlatButton(
-                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.grey : Colors.white)),
+                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.blue : Colors.white)),
                                               onPressed: (){
                                                 if(imagem == null){
                                                   return null;
@@ -174,7 +174,7 @@ class _MenuState extends State<Menu> {
                                           padding: const EdgeInsets.only(
                                             top: 10
                                           ),
-                                          child: Text('ID: ${model.firebaseUser.uid.toString()}',
+                                          child: SelectableText('ID: ${model.firebaseUser.uid.toString()}',
                                           style: TextStyle(
                                             color: Colors.white70
                                           ),
@@ -224,7 +224,7 @@ class _MenuState extends State<Menu> {
                                                       );
                                                     },
                                                     child: Empates(),
-                                                  ),                                                  
+                                                  ),
                                                 ],
                                               ),
                                             ],
@@ -320,21 +320,27 @@ class Ganhos extends StatelessWidget {
               );
             }
             else if(snapshot.data.documents.length == 0){
-              return Column(
+              return Container(
+                padding: EdgeInsets.all(5),
+                child: Column(
                   children: <Widget>[
                     Text("Vitórias", style: TextStyle(color: Colors.green),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                ),
+              );
             }
-            return Column(
+            return Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
                   children: <Widget>[
                     Text("Vitórias", style: TextStyle(color: Colors.green),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                )
+            );
           },
         );
       },
@@ -355,21 +361,27 @@ class Perdidos extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if(snapshot.data.documents.length == 0){
-              return Column(
+              return Container(
+                padding: EdgeInsets.all(5),
+                child: Column(
                   children: <Widget>[
                     Text("Derrotas", style: TextStyle(color: Colors.red),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                ),
+              );
             }
-            return Column(
+            return Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
                   children: <Widget>[
                     Text("Derrotas", style: TextStyle(color: Colors.red),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                )
+            );
           },
         );
       },
@@ -390,21 +402,27 @@ class Empates extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else if(snapshot.data.documents.length == 0){
-              return Column(
+              return Container(
+                padding: EdgeInsets.all(5),
+                child: Column(
                   children: <Widget>[
                     Text("Empates", style: TextStyle(color: Colors.grey),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                ),
+              );
             }
-            return Column(
+            return Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
                   children: <Widget>[
                     Text("Empates", style: TextStyle(color: Colors.grey),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.black),),
                   ],
-                );
+                ),
+            );
           },
         );
       },
@@ -422,7 +440,9 @@ class JogadorTotal extends StatelessWidget {
           builder: (context, snapshot){
             if(!snapshot.hasData){
               return Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               );
             }
             return Column(
