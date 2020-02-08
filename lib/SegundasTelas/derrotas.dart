@@ -38,7 +38,7 @@ class Derrotas extends StatelessWidget {
               body: Container(
                 child: Center(
                   child: Container(
-                    color: Colors.white,
+                    color: Colors.red,
                     padding: EdgeInsets.all(10),
                     child: Text("Você não tem nenhuma partida perdida", style: TextStyle(color:Colors.white),)
                   )

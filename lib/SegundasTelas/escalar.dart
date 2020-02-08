@@ -252,6 +252,7 @@ class _EscalarState extends State<Escalar> {
                               ),
                             ),
                             Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
                               decoration: BoxDecoration(
                                 color: Colors.blue,
                                 borderRadius: BorderRadius.circular(5),
@@ -261,6 +262,8 @@ class _EscalarState extends State<Escalar> {
                                     controller: jogo,
                                     decoration: InputDecoration(
                                       hintText: "Nome do jogo",
+                                      hintStyle: TextStyle(color: Colors.white),
+                                      contentPadding: EdgeInsets.only(left: 10)
                                     ),
                                     style: TextStyle(color: Colors.black),
                                     cursorColor: Colors.white,
@@ -380,6 +383,7 @@ class _EscalarState extends State<Escalar> {
                               )
                             ),
                             Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
                               decoration: BoxDecoration(
                                 color: Colors.blue,
                                 borderRadius: BorderRadius.circular(5),
@@ -389,6 +393,8 @@ class _EscalarState extends State<Escalar> {
                                     controller: faltas,
                                     decoration: InputDecoration(
                                       hintText: "Quantas faltas?",
+                                      hintStyle: TextStyle(color: Colors.white),
+                                      contentPadding: EdgeInsets.only(left: 10)
                                     ),
                                     style: TextStyle(color: Colors.black),
                                     cursorColor: Colors.blue,

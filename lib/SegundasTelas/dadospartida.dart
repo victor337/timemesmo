@@ -322,6 +322,8 @@ class _BancoDadosState extends State<BancoDados> {
                   int gols = int.parse(teste.text);
                   int vermelhocerto = int.parse(vermelho.text);
                   int amarelocerto = int.parse(amarelo.text);
+                  amarelocerto += atual;
+                  vermelhocerto += atual;
                   gols += atual;
                   Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
                     "Gols": gols,

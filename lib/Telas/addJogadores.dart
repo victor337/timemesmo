@@ -103,6 +103,8 @@ class _AddJogadoresState extends State<AddJogadores> {
       });
     }
 
+    
+
     void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa, [File imgFile])async{
 
       Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(nome).setData(
@@ -203,7 +205,7 @@ class _AddJogadoresState extends State<AddJogadores> {
                             if(imgFile == null) return;
                             else{
                               setImagem(imgFile);
-                            }
+                            }                            
                           },
                           child: Container(            
                             decoration: BoxDecoration(

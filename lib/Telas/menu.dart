@@ -21,6 +21,25 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
 
+  fotoenviada(){
+      showDialog(
+        context: context,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.all(20),
+          title: Text("Tudo certo!"),
+          content: Text("Foto enviada!", style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: Text("Ok"),
+            )
+          ],
+        )
+      );
+    }
+
   File imagem;
 
   void setImagem(File img){
@@ -146,29 +165,40 @@ class _MenuState extends State<Menu> {
                                                     border: Border.all(width: 1),
                                                     color: Colors.grey[300],
                                                   ),
-                                                  child: snapshot.data["img"] == null ? Center(child: Text("Envie uma brasão")) : 
+                                                  child: snapshot.data["img"] == null ? Center(child: imagem == null ? Text("Envie uma brasão") : Text("Brasão enviado")) : 
                                                   Container(height: 120, width: 120, child: CircleAvatar(backgroundImage: NetworkImage(snapshot.data["img"])),) 
                                                 ),
                                               ),
                                             ),
                                             FlatButton(
-                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.blue : Colors.white)),
+                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.white : Colors.blue)),
                                               onPressed: (){
                                                 if(imagem == null){
                                                   return null;
                                                 } else{
                                                   sendImgSt(model.firebaseUser.uid, "Brasão" , imagem);
                                                   model.notify();
+                                                  fotoenviada();
+                                                  model.notify();
                                                 }
+                                                
                                               }
                                             )
                                               ],
                                             ),
+
                                             Padding(
                                               padding: const EdgeInsets.only(right: 16),
                                               child: JogadorTotal()
                                             )
                                           ],
+                                        ),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(builder: (context) => Historico())
+                                            );
+                                          }, child: TotalJogos()
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(
@@ -448,6 +478,35 @@ class JogadorTotal extends StatelessWidget {
             return Column(
                   children: <Widget>[
                     Text("Jogadores", style: TextStyle(color: Colors.white),),
+                    SizedBox(height: 5),
+                    Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.white),),
+                  ],
+                );
+          },
+        );
+      },
+    );
+  }
+}
+
+class TotalJogos extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ScopedModelDescendant<UserModel>(
+      builder: (context, child, model){
+        return FutureBuilder<QuerySnapshot>(
+          future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Historico").getDocuments(),
+          builder: (context, snapshot){
+            if(!snapshot.hasData){
+              return Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              );
+            }
+            return Column(
+                  children: <Widget>[
+                    Text("Jogos", style: TextStyle(color: Colors.white),),
                     SizedBox(height: 5),
                     Text(snapshot.data.documents.length.toString(), style: TextStyle(color: Colors.white),),
                   ],

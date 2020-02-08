@@ -110,14 +110,14 @@ class _EditarDadosState extends State<EditarDados> {
                 child: Image.asset("assets/fundofundo.jpeg", fit: BoxFit.cover,),
               ),      
               Container(
-                padding: EdgeInsets.all(20),
+                margin: EdgeInsets.only(left: 10, right: 10),
                 child: Form(
                   child: ListView(
                     children: <Widget>[
                       SizedBox(height: 20),
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(5),
                           color: Colors.white
                         ),
                         child: Column(
@@ -163,7 +163,7 @@ class _EditarDadosState extends State<EditarDados> {
                         padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 30),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(15)
+                          borderRadius: BorderRadius.circular(5)
                         ),
                         child: Form(
                           key: _formkey,
@@ -242,9 +242,9 @@ class _EditarDadosState extends State<EditarDados> {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        padding: EdgeInsets.only(top: 5),
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(5),
                           color: Colors.white
                         ),
                         child: Column(
@@ -252,9 +252,10 @@ class _EditarDadosState extends State<EditarDados> {
                           Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          Column(
+                          Row(
                             children: <Widget>[
                               Text("Amarelos"),
+                              SizedBox(width: 10),
                               DropdownButton<String>(
                                 items: _amareloopcoes.map((String dropDownStringItem){
                                   return DropdownMenuItem<String>(
@@ -271,9 +272,11 @@ class _EditarDadosState extends State<EditarDados> {
                               ),
                             ],
                           ),
-                          Column(
+                          SizedBox(width: 5,),
+                          Row(
                             children: <Widget>[
                               Text("Vermelhos"),
+                              SizedBox(width: 10),
                               DropdownButton<String>(
                                 items: _vermelhoopcoes.map((String sdropDownStringItem){
                                   return DropdownMenuItem<String>(
