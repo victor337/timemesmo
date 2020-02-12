@@ -246,7 +246,7 @@ class _BancoDadosState extends State<BancoDados> {
 
     final _formkey = GlobalKey<FormState>();
 
-    addteste(int atual, String user){
+    addteste(int atual, int vermelhu, int amarelu, String user){
       showDialog(
         context: context,
         child: AlertDialog(
@@ -322,13 +322,13 @@ class _BancoDadosState extends State<BancoDados> {
                   int gols = int.parse(teste.text);
                   int vermelhocerto = int.parse(vermelho.text);
                   int amarelocerto = int.parse(amarelo.text);
-                  amarelocerto += atual;
-                  vermelhocerto += atual;
+                  amarelocerto += amarelu;
+                  vermelhocerto += vermelhu;
                   gols += atual;
                   Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
                     "Gols": gols,
-                    "Amarelo": amarelocerto,
-                    "Vermelho": vermelhocerto
+                    "Amarelos": amarelocerto,
+                    "Vermelhos": vermelhocerto
                   });
                   Navigator.pop(context);
                   }
@@ -408,7 +408,7 @@ class _BancoDadosState extends State<BancoDados> {
               ),
               title: Text(snapshot.data["Nome"]),
               onTap: (){
-                addteste(snapshot.data["Gols"], model.firebaseUser.uid); 
+                addteste(snapshot.data["Gols"], snapshot.data["Vermelhos"], snapshot.data["Amarelos"], model.firebaseUser.uid); 
                 }
             ),
           )

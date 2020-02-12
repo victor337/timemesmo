@@ -171,7 +171,7 @@ class _MenuState extends State<Menu> {
                                               ),
                                             ),
                                             FlatButton(
-                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.white : Colors.blue)),
+                                              child: Text("Enviar foto", style: TextStyle(color: imagem == null ? Colors.blue : Colors.white)),
                                               onPressed: (){
                                                 if(imagem == null){
                                                   return null;
@@ -186,11 +186,7 @@ class _MenuState extends State<Menu> {
                                             )
                                               ],
                                             ),
-
-                                            Padding(
-                                              padding: const EdgeInsets.only(right: 16),
-                                              child: JogadorTotal()
-                                            )
+                                            JogadorTotal()
                                           ],
                                         ),
                                         GestureDetector(

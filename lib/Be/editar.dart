@@ -58,6 +58,8 @@ class _EditarDadosState extends State<EditarDados> {
             FlatButton(
               onPressed: (){
                 Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pop(context);
               },
               child: Text("Ok"),
             )
@@ -242,7 +244,6 @@ class _EditarDadosState extends State<EditarDados> {
                       ),
                       SizedBox(height: 10),
                       Container(
-                        margin: EdgeInsets.only(left: 10, right: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
                           color: Colors.white

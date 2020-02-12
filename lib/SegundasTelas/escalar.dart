@@ -247,7 +247,7 @@ class _EscalarState extends State<Escalar> {
                                 children: <Widget>[
                                   Text("Atenção"),
                                   SizedBox(height: 5),
-                                  Text("Os jogos não podem ter o meso nome, caso adicione um jogo cujo o nome já exista, ele será substituido pelo novo", textAlign: TextAlign.center,)
+                                  Text("Os jogos não podem ter o mesmo nome, caso adicione um jogo cujo o nome já exista, ele será substituido pelo novo", textAlign: TextAlign.center,)
                                 ],
                               ),
                             ),
@@ -263,6 +263,7 @@ class _EscalarState extends State<Escalar> {
                                     decoration: InputDecoration(
                                       hintText: "Nome do jogo",
                                       hintStyle: TextStyle(color: Colors.white),
+                                      labelStyle: TextStyle(color: Colors.white),
                                       contentPadding: EdgeInsets.only(left: 10)
                                     ),
                                     style: TextStyle(color: Colors.black),

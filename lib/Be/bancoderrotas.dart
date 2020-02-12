@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+import 'package:timemesmo/scoped/modelo_user.dart';
 
 
 
@@ -13,7 +15,50 @@ class BancoDerrotas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return Column(
+    /*
+
+    excluir(String user, String result){
+
+      if(result == "Vitoria"){
+        result = "Ganhos";
+      } else if(result == "Derrota"){
+        result = "Perdidos";
+      } else{
+        result = "Empates";
+      }
+
+      showDialog(
+        context: context,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.all(20),
+          title: Text("Confirmação"),
+          content: Text("Deseja realmente excluir? A ação não pode ser desfeita!", style: TextStyle(fontSize: 20),),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: Text("Cancelar",),
+            ),
+            FlatButton(
+              onPressed: (){
+                Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(snapshot.documentID).delete();
+                Firestore.instance.collection("Usuarios").document(user).collection(result).document(snapshot.documentID).delete();
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text("Confirmar", style: TextStyle(color: Colors.red),),
+            )
+          ],
+        )
+      );
+    }
+
+    */
+
+    return ScopedModelDescendant<UserModel>(
+      builder: (context, child, model){
+        return Column(
       children: <Widget>[
         Card(
           elevation: 10,
@@ -60,6 +105,8 @@ class BancoDerrotas extends StatelessWidget {
         ),
         SizedBox(height: 5,)
       ],
+    );
+      },
     );
   }
 }
