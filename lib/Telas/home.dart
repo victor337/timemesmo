@@ -83,20 +83,18 @@ class _HomeState extends State<Home> {
                       child: Image.asset("assets/campo.jpg", fit: BoxFit.cover,),
                     ),
                     Container(
-                      padding: EdgeInsets.all(5),
-                      child: ListView(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: snapshot.data.documents.map(
-                            (doc){
-                              return Banco(doc);
-                            }).toList(),
-                              )
-                            )
-                          ],
-                        ),
+                      padding: EdgeInsets.all(10),
+                      child: ExpansionTile(
+                      title: Card(       
+                        elevation: 5,     
+                        color: Colors.blue,                        
+                        child: Container(padding: EdgeInsets.all(10), color: Colors.transparent, child: Text("Jogadores", style: TextStyle(color: Colors.white, fontSize: 20),),),
+                      ),
+                      children: snapshot.data.documents.map(
+                                (doc){
+                                  return Banco(doc);
+                                }).toList(),
+                    ),
                     )
                   ],
                 );

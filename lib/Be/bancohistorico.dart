@@ -32,7 +32,7 @@ class BancoHistorico extends StatelessWidget {
                   leading: CircleAvatar(
                     radius: 25,
                     backgroundColor: Colors.transparent,
-                    backgroundImage: AssetImage("assets/person-male.png")
+                    backgroundImage: AssetImage('assets/bola.png',)
                   ),
                   title: Text("Jogo: ${snapshot.data["Nome do jogo"]}", style: TextStyle(color: Colors.black),),
                   trailing: Text("Resultado ${snapshot.data["Resultado"]}", style: TextStyle(color: Colors.black),),

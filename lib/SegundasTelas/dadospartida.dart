@@ -246,21 +246,23 @@ class _BancoDadosState extends State<BancoDados> {
 
     final _formkey = GlobalKey<FormState>();
 
+    
+
     addteste(int atual, int vermelhu, int amarelu, String user){
       showDialog(
         context: context,
         child: AlertDialog(
-          contentPadding: EdgeInsets.all(20),
-          title: Text("Preencha as informações"),
           content: Container(
-            height: MediaQuery.of(context).size.height/3,
             padding: EdgeInsets.all(10),
+            height: MediaQuery.of(context).size.height * 0.5,
             child: Form(
               key: _formkey,
               
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Text("Preencha as informações"),
+                  SizedBox(height: 5),
                   TextFormField(
                     controller: teste,
                     decoration: InputDecoration(
@@ -304,38 +306,41 @@ class _BancoDadosState extends State<BancoDados> {
                       } return null;
                     },
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FlatButton(
+                        onPressed: (){
+                          Navigator.pop(context);
+                        },
+                        child: Text("Cancelar",),
+                      ),
+                      FlatButton(
+                        onPressed: (){
+                          if(_formkey.currentState.validate()){
+                            Navigator.pop(context);
+                            int gols = int.parse(teste.text);
+                            int vermelhocerto = int.parse(vermelho.text);
+                            int amarelocerto = int.parse(amarelo.text);
+                            amarelocerto += amarelu;
+                            vermelhocerto += vermelhu;
+                            gols += atual;
+                            Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
+                              "Gols": gols,
+                              "Amarelos": amarelocerto,
+                              "Vermelhos": vermelhocerto
+                            });
+                            Navigator.pop(context);
+                            }
+                        },
+                        child: Text("Confirmar", style: TextStyle(color: Colors.green),),
+                      )
+                    ],
+                  )
                 ],
               ),
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: (){
-                Navigator.pop(context);
-              },
-              child: Text("Cancelar",),
-            ),
-            FlatButton(
-              onPressed: (){
-                if(_formkey.currentState.validate()){
-                  Navigator.pop(context);
-                  int gols = int.parse(teste.text);
-                  int vermelhocerto = int.parse(vermelho.text);
-                  int amarelocerto = int.parse(amarelo.text);
-                  amarelocerto += amarelu;
-                  vermelhocerto += vermelhu;
-                  gols += atual;
-                  Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
-                    "Gols": gols,
-                    "Amarelos": amarelocerto,
-                    "Vermelhos": vermelhocerto
-                  });
-                  Navigator.pop(context);
-                  }
-              },
-              child: Text("Confirmar", style: TextStyle(color: Colors.green),),
             )
-          ],
+          ),
         )
       );
     }
@@ -404,7 +409,7 @@ class _BancoDadosState extends State<BancoDados> {
               leading: CircleAvatar(
                 radius: 25,
                 backgroundColor: Colors.transparent,
-                backgroundImage: AssetImage("assets/person-male.png"),
+                backgroundImage: AssetImage("assets/jogadores.png"),
               ),
               title: Text(snapshot.data["Nome"]),
               onTap: (){

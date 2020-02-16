@@ -245,7 +245,6 @@ class _CadastroCertoState extends State<CadastroCerto> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.all(10),
                   child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[

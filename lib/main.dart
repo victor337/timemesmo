@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           fontFamily: 'Raleway',
           primarySwatch: Colors.blue,
-          primaryColor: Colors.grey
+          primaryColor: Colors.blue
         ),
         home: Splash()
       ),

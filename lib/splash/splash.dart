@@ -1,9 +1,7 @@
 import 'package:timemesmo/Telas/login.dart';
-import 'package:timemesmo/controles/home_screen.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:splashscreen/splashscreen.dart';
 
 
 
@@ -20,18 +18,29 @@ class _SplashState extends State<Splash> {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
         model.pegar();
-        return SplashScreen(
-      seconds: 4,
-      navigateAfterSeconds: model.firebaseUser == null ? Login() : HomeScreen(),
-      image: new Image.asset('assets/splash.png'),
-      title: Text('Iniciando', style: TextStyle(color: Colors.white, fontSize: 20),),
-      backgroundColor: Colors.blue,
-      styleTextUnderTheLoader: new TextStyle(),
-      photoSize: 250.0,
-      loaderColor: Colors.white
-    );
-      }
+        return Scaffold(
+          body: Container(
+            color: Colors.blue,
+            height: MediaQuery.of(context).size.height,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: Image.asset('assets/splash.png', fit: BoxFit.contain)
+            )
+          ),
+        );
+      }      
     );
   }
+
+  @override
+  void initState() { 
+    super.initState();
+    Future.delayed(Duration(seconds: 3)).then((_){
+      Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => Login())
+          );
+    });
+    
+  }  
 
 }

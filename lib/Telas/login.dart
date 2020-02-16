@@ -195,7 +195,7 @@ class _LoginState extends State<Login> {
                     },
                     child: Text("Entrar", style: TextStyle(color: Colors.white, fontSize: 20),),
                 )
-                ),
+                ), 
                 SizedBox(height: 10,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -206,7 +206,6 @@ class _LoginState extends State<Login> {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.all(10),
                   child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[

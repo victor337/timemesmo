@@ -120,6 +120,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.1+2"
+  firebase_messaging:
+    dependency: "direct main"
+    description:
+      name: firebase_messaging
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.9"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -371,13 +378,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.5"
-  splashscreen:
-    dependency: "direct main"
-    description:
-      name: splashscreen
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.0"
   stack_trace:
     dependency: transitive
     description:
