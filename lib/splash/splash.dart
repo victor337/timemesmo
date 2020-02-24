@@ -1,7 +1,9 @@
-import 'package:timemesmo/Telas/login.dart';
-import 'package:timemesmo/scoped/modelo_user.dart';
-import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:splashscreen/splashscreen.dart';
+import 'package:timemesmo/Telas/login.dart';
+import 'package:flutter/material.dart';
+import 'package:timemesmo/controles/home_screen.dart';
+import 'package:timemesmo/scoped/modelo_user.dart';
 
 
 
@@ -17,30 +19,18 @@ class _SplashState extends State<Splash> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
-        model.pegar();
-        return Scaffold(
-          body: Container(
-            color: Colors.blue,
-            height: MediaQuery.of(context).size.height,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: Image.asset('assets/splash.png', fit: BoxFit.contain)
-            )
-          ),
+        model.pegarUidDoUsuario();
+        print(model.firebaseUser);
+        return SplashScreen(
+          loaderColor: Colors.white,
+          seconds: 4,
+          title: Text("Iniciando", style: TextStyle(color: Colors.white, fontFamily: 'Raleway-Regular.ttf'),),
+          image: Image.asset("assets/Meu-Timao.png"),
+          photoSize: MediaQuery.of(context).size.height/4,
+          backgroundColor: Colors.blue,
+          navigateAfterSeconds: model.firebaseUser != null ? HomeScreen() : Login(),
         );
-      }      
+      }
     );
   }
-
-  @override
-  void initState() { 
-    super.initState();
-    Future.delayed(Duration(seconds: 3)).then((_){
-      Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => Login())
-          );
-    });
-    
-  }  
-
 }

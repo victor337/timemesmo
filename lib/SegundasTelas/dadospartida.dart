@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -25,13 +26,81 @@ class _DadosPartidaState extends State<DadosPartida> {
   _DadosPartidaState(this.snapshot);
 
 
-  void numero(){
-    setState(() {
-      
-    });
-  }
-  
+    excluir(String user, String result){
 
+      if(result == "Vitória"){
+        result = "Ganhos";
+      } else if(result == "Derrota"){
+        result = "Perdidos";
+      } else{
+        result = "Empates";
+      }
+
+    showModalBottomSheet(
+      context: context,
+      builder: (_){
+        return Container(
+          padding: EdgeInsets.all(10),
+          height: MediaQuery.of(context).size.height * 0.3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Deseja realmente excluir?", style: TextStyle(fontSize: 22),),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      child: Text("Cancelar", style: TextStyle(color:  Colors.white)),
+                      onPressed: (){
+                        Navigator.pop(context);
+                        myInterstitial
+                        ..load()
+                        ..show(
+                          anchorType: AnchorType.bottom,
+                          anchorOffset: 0.0,
+                          horizontalCenterOffset: 0.0,
+                        );
+
+                      },
+                    )
+                  ),
+                  SizedBox(width: 15),
+                  Expanded(
+                    child: RaisedButton(
+                      color: Colors.red,
+                      child: Text("Confirmar", style: TextStyle(color:  Colors.white)),
+                      onPressed: (){
+                        Firestore.instance.collection("Usuarios").document(user).collection("$result").document(snapshot.documentID).delete();
+                        Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(snapshot.documentID).delete();                        
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        myInterstitial
+                          ..load()
+                          ..show(
+                            anchorType: AnchorType.bottom,
+                            anchorOffset: 0.0,
+                            horizontalCenterOffset: 0.0,
+                            );
+
+                      },
+                    )
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      }
+      );
+
+
+    }
+
+/*
 
     excluir(String user, String result){
 
@@ -71,7 +140,7 @@ class _DadosPartidaState extends State<DadosPartida> {
       );
     }
 
-    
+    */
   
   @override
   Widget build(BuildContext context) {
@@ -133,7 +202,7 @@ class _DadosPartidaState extends State<DadosPartida> {
                               Divider(),
                               Text("Campo: ${snapshot.data["Campo"]}", style: TextStyle(fontSize: 21),),
                               Divider(),
-                              Text("Faltas: ${snapshot.data["Faltas"]}", style: TextStyle(fontSize: 21),)
+                              Text("Data: ${snapshot.data["Data"]}", style: TextStyle(fontSize: 21),)
                             ],
                           ),
                         ),
@@ -206,7 +275,15 @@ class _ListaJogaState extends State<ListaJoga> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
                 );
-              } 
+              }
+            else if(snapshot.data.documents.length == 0){
+              return Container(
+                color: Colors.white,
+                child: Center(
+                  child: Text("Os jogadores foram excluidos!")
+                )
+              );
+            }
             else {
               return Column(
                 children: snapshot.data.documents.map(
@@ -325,11 +402,33 @@ class _BancoDadosState extends State<BancoDados> {
                             amarelocerto += amarelu;
                             vermelhocerto += vermelhu;
                             gols += atual;
-                            Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).updateData({
+                            Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Todos").document(snapshot.documentID).updateData({
                               "Gols": gols,
                               "Amarelos": amarelocerto,
                               "Vermelhos": vermelhocerto
                             });
+                            Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Ataque").document(snapshot.documentID).updateData({
+                              "Gols": gols,
+                              "Amarelos": amarelocerto,
+                              "Vermelhos": vermelhocerto
+                            });
+                            Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Defesa").document(snapshot.documentID).updateData({
+                              "Gols": gols,
+                              "Amarelos": amarelocerto,
+                              "Vermelhos": vermelhocerto
+                            });
+                            Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Meia").document(snapshot.documentID).updateData({
+                              "Gols": gols,
+                              "Amarelos": amarelocerto,
+                              "Vermelhos": vermelhocerto
+                            });
+                            myInterstitial
+                                      ..load()
+                                      ..show(
+                                        anchorType: AnchorType.bottom,
+                                        anchorOffset: 0.0,
+                                        horizontalCenterOffset: 0.0,
+                                      );
                             Navigator.pop(context);
                             }
                         },
@@ -392,7 +491,7 @@ class _BancoDadosState extends State<BancoDados> {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
         return FutureBuilder<DocumentSnapshot>(
-      future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Jogadores").document(snapshot.documentID).get(),
+      future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Time").document("Jogadores").collection("Todos").document(snapshot.documentID).get(),
       builder: (context, snapshot){
         if(!snapshot.hasData){
           return Container();
@@ -428,3 +527,23 @@ class _BancoDadosState extends State<BancoDados> {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['football', 'game'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+
+
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4735870394464769/3823174609",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

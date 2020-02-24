@@ -63,7 +63,7 @@ class Empatados extends StatelessWidget {
                               children: snapshot.data.documents.map(
                               (doc){
                                 return BancoEmpates(doc);
-                              }).toList(),
+                              }).toList().reversed.toList(),
                                 )
                               )
                             ],

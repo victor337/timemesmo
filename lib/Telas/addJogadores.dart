@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -105,9 +106,11 @@ class _AddJogadoresState extends State<AddJogadores> {
 
     
 
-    void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa, [File imgFile])async{
+    void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca,
+     String numero, String camisa, [File imgFile])async{
 
-      Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(nome).setData(
+      Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores")
+      .collection("Todos").document(nome).setData(
         {
           "Nome": nome,
           "Posição": posi,
@@ -127,9 +130,37 @@ class _AddJogadoresState extends State<AddJogadores> {
       String url = await taskSnapshot.ref.getDownloadURL();
       
 
-      Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(nome).updateData({"img": url,});
+      Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Todos")
+      .document(nome).updateData({"img": url,});
       
       
+    }
+
+    void sendPos(String pos, int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa, [File imgFile])async{
+
+      Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection(pos).document(nome).setData(
+        {
+          "Nome": nome,
+          "Posição": posi,
+          "Nº da camisa": camisa,
+          "Escalado": esca,
+          "Contato": numero,
+          "Gols": gols,
+          "Amarelos": amarelo,
+          "Vermelhos": vermelho,
+        }
+        );
+
+      StorageUploadTask task = FirebaseStorage.instance.ref().child(user).child("Jogadores").child(nome)
+      .child(DateTime.now().millisecondsSinceEpoch.toString()).putFile(imgFile);
+      
+      StorageTaskSnapshot taskSnapshot = await task.onComplete;
+      String url = await taskSnapshot.ref.getDownloadURL();
+      
+
+      Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection(pos)
+      .document(nome).updateData({"img": url,});
+
     }
 
     
@@ -371,13 +402,32 @@ class _AddJogadoresState extends State<AddJogadores> {
                               String jogador = nome.text;
                               String contato = cont.text;
                               String ncamisa = cami.text;
+                              String pos;
                               int novo = int.parse(gols.text);
                               int amarelo = int.parse(_amarelo);
                               int vermelho = int.parse(_vermelho);
                               
+                              if(_nsein == "Goleiro" || _nsein == "Zagueiro" || _nsein == "Lateral"){
+                                pos = "Defesa";
+                              }
+                              else if(_nsein == "Volante" || _nsein == "Meio-Campo" || _nsein == "Meia-Atacante"){
+                                pos = "Meia";
+                              }
+                              else {
+                                pos = "Ataque";
+                              }
+                              
                               sendImgSt(amarelo, vermelho ,model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa, imagem,);
+                              sendPos(pos, amarelo, vermelho ,model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa, imagem,);
                               resetCamps();
                               dialogolo(jogador);
+                              myInterstitial
+                              ..load()
+                              ..show(
+                                anchorType: AnchorType.bottom,
+                                anchorOffset: 0.0,
+                                horizontalCenterOffset: 0.0,
+                              );
                             }
                           }
                           
@@ -385,6 +435,7 @@ class _AddJogadoresState extends State<AddJogadores> {
                         child: Text("Adicionar", style: TextStyle(color: Colors.white, fontSize: 20),),
                       ),
                       ),
+                      SizedBox(height: 15,)
                     ],
                   ),
                 ),
@@ -396,3 +447,23 @@ class _AddJogadoresState extends State<AddJogadores> {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['football', 'game'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+
+
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4735870394464769/2267007201",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

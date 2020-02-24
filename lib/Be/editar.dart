@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,32 @@ class _EditarDadosState extends State<EditarDados> {
 
     void sendImgSt(int amarelo, int vermelho, String user, int gols, String nome, String posi, String esca, String numero, String camisa,)async{
 
-      Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.data["Nome"]).updateData(
+      Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Todos").document(snapshot.data["Nome"]).updateData(
+        {
+          "Nome": nome,
+          "Posição": posi,
+          "Nº da camisa": camisa,
+          "Escalado": esca,
+          "Contato": numero,
+          "Gols": gols,
+          "Amarelos": amarelo,
+          "Vermelhos": vermelho
+        }
+        );
+
+        String pos;
+        
+        if(snapshot.data["Posição"] == "Goleiro" || snapshot.data["Posição"] == "Zagueiro" || snapshot.data["Posição"] == "Lateral"){
+          pos = "Defesa";
+        }
+        else if(snapshot.data["Posição"] == "Volante" || snapshot.data["Posição"] == "Meio-Campo" || snapshot.data["Posição"] == "Meia-Atacante"){
+          pos = "Meia";
+        }
+        else{
+          pos = "Ataque";
+        }
+
+        Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection(pos).document(snapshot.data["Nome"]).updateData(
         {
           "Nome": nome,
           "Posição": posi,
@@ -107,7 +133,7 @@ class _EditarDadosState extends State<EditarDados> {
           body: Stack(
             children: <Widget>[
               Container(
-                height: MediaQuery.of(context).size.height,
+                height: double.infinity,
                 width: MediaQuery.of(context).size.width,
                 child: Image.asset("assets/fundofundo.jpeg", fit: BoxFit.cover,),
               ),      
@@ -317,6 +343,13 @@ class _EditarDadosState extends State<EditarDados> {
                               sendImgSt(amarelo, vermelho, model.firebaseUser.uid, novo, jogador, _nsein, _itemSelecionado, contato, ncamisa,);
                               resetCamps();
                               dialogolo(jogador);
+                              myInterstitial
+                              ..load()
+                              ..show(
+                                anchorType: AnchorType.bottom,
+                                anchorOffset: 0.0,
+                                horizontalCenterOffset: 0.0,
+                              );
                             }
                           
                         },
@@ -334,3 +367,23 @@ class _EditarDadosState extends State<EditarDados> {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['football', 'game'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+
+
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4735870394464769/3823174609",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

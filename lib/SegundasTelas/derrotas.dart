@@ -63,7 +63,7 @@ class Derrotas extends StatelessWidget {
                               children: snapshot.data.documents.map(
                               (doc){
                                 return BancoDerrotas(doc);
-                              }).toList(),
+                              }).toList().reversed.toList(),
                                 )
                               )
                             ],

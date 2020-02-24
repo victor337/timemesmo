@@ -88,7 +88,7 @@ class Historico extends StatelessWidget {
                               children: snapshot.data.documents.map(
                               (doc){
                                 return BancoHistorico(doc);
-                              }).toList(),
+                              }).toList().reversed.toList(),
                                 )
                               )
                             ],

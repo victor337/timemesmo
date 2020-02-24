@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timemesmo/Be/editar.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,71 @@ class _DadosJogadorState extends State<DadosJogador> {
   Widget build(BuildContext context) {
 
     dialogolo(String user){
+      showModalBottomSheet(
+        context: context,
+        builder: (_){
+          return Container(
+            padding: EdgeInsets.all(15),
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text("Tem certeza que deseja excluir?", style: TextStyle(fontSize: 22),),
+                SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Expanded(
+                      child: RaisedButton(
+                        color: Colors.blue,
+                        onPressed: (){
+                          Navigator.pop(context);
+                          myInterstitial
+                            ..load()
+                            ..show(
+                              anchorType: AnchorType.bottom,
+                              anchorOffset: 0.0,
+                              horizontalCenterOffset: 0.0,
+                            );
+                        },
+                        child: Text("Cancelar ação!", style: TextStyle(color: Colors.white,)),
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: RaisedButton(
+                        color: Colors.red,
+                        onPressed: (){
+                          Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Todos").document(snapshot.documentID).delete();
+                          Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Ataque").document(snapshot.documentID).delete();
+                          Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Meia").document(snapshot.documentID).delete();
+                          Firestore.instance.collection("Usuarios").document(user).collection("Time").document("Jogadores").collection("Defesa").document(snapshot.documentID).delete();
+                          myInterstitial
+                            ..load()
+                            ..show(
+                            anchorType: AnchorType.bottom,
+                            anchorOffset: 0.0,
+                            horizontalCenterOffset: 0.0,
+                          );
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: Text("Desejo excluir!", style: TextStyle(color: Colors.white,)),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
+        }
+        );
+    }
+
+  /*
+
+    dialogolo(String user){
       showDialog(
         context: context,
         child: AlertDialog(
@@ -32,25 +98,13 @@ class _DadosJogadorState extends State<DadosJogador> {
           title: Text("Tem certeza?"),
           content: Text("Se excluir o jogador não haverá como desfazer a ação!", style: TextStyle(fontSize: 20),),
           actions: <Widget>[
-            FlatButton(
-              onPressed: (){
-                Navigator.pop(context);
-              },
-              child: Text("Cancelar ação!", style: TextStyle(color: Colors.blue,)),
-            ),
-            FlatButton(
-              onPressed: (){
-                Firestore.instance.collection("Usuarios").document(user).collection("Jogadores").document(snapshot.documentID).delete();
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-              child: Text("Desejo excluir!", style: TextStyle(color: Colors.red,)),
-            ),
+            
           ],
         )
       );
     }
 
+  */
 
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
@@ -163,6 +217,7 @@ class _DadosJogadorState extends State<DadosJogador> {
                           color: Colors.red,
                           onPressed: (){
                             dialogolo(model.firebaseUser.uid);
+                            
                           },
                           child: Text("Deletar jogador", style: TextStyle(color: Colors.white, fontSize: 20),),
                         ),
@@ -178,3 +233,23 @@ class _DadosJogadorState extends State<DadosJogador> {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['football', 'game'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  // Android emulators are considered test devices
+);
+
+
+
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4735870394464769/2267007201",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

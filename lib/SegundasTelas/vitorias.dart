@@ -63,7 +63,7 @@ class Vitorias extends StatelessWidget {
                               children: snapshot.data.documents.map(
                               (doc){
                                 return BancoVitorias(doc);
-                              }).toList(),
+                              }).toList().reversed.toList(),
                                 )
                               )
                             ],

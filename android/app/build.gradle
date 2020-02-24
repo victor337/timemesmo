@@ -44,8 +44,8 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
         minSdkVersion 16
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 4
+        versionName '1.2.0'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -72,6 +72,7 @@ flutter {
 dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.android.gms:play-services-ads:18.3.0'
     implementation 'com.android.support:multidex:1.0.3'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

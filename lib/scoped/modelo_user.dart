@@ -19,10 +19,19 @@ class UserModel extends Model {
   }
 
 
-  pegar()async{
-    firebaseUser = await FirebaseAuth.instance.currentUser();
-    return firebaseUser?.uid;
+  pegarUidDoUsuario()async{
+    await FirebaseAuth.instance.currentUser().then((user){
+
+      firebaseUser = user;
+      notifyListeners();
+
+    }).catchError((erro){
+      firebaseUser = null;
+      notifyListeners();
+    });
   }
+
+  
 
   void criarConta(Map<String, dynamic> userData, String pass, VoidCallback sucesso, VoidCallback falha){
     

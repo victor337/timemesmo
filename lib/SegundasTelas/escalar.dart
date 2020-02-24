@@ -1,9 +1,10 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:timemesmo/SegundasTelas/historico.dart';
 import 'package:timemesmo/scoped/modelo_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-
+import 'package:intl/intl.dart';
 
 List<String> jogadores = List();
 
@@ -31,7 +32,7 @@ class _EscalarState extends State<Escalar> {
   TextEditingController campo = TextEditingController();
   TextEditingController timeadv = TextEditingController();
   TextEditingController jogo = TextEditingController();
-  TextEditingController faltas = TextEditingController();
+  DateTime dataSelecionada;
 
 
   void resetCamps(){
@@ -39,10 +40,12 @@ class _EscalarState extends State<Escalar> {
       campo.text = "";
       timeadv.text = "";
       jogo.text = "";
+      jogadores = [];
       setState(() {
         _itemResultdo = "Vitória";
         _itemSelecionadodeles = "0";
         _itemSelecionadonosso = "0";
+        dataSelecionada = null;
       });
     }
 
@@ -52,7 +55,7 @@ class _EscalarState extends State<Escalar> {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
         return FutureBuilder<QuerySnapshot>(
-            future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Jogadores").getDocuments(),
+            future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Time").document("Jogadores").collection("Todos").getDocuments(),
             builder: (context, snapshot){
               if(!snapshot.hasData){
                 return Scaffold(
@@ -122,47 +125,47 @@ class _EscalarState extends State<Escalar> {
               else 
               {
                 
-                void criarJogo(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogo(DateTime data, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
                     "Nome do jogo": jogo,
-                    "Faltas": faltas
+                    "Data": DateFormat('dd/MM/y').format(data).toString()
                   });
                 }
 
-                void criarJogoGanho(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoGanho(DateTime data, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Ganhos").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
                     "Nome do jogo": jogo,
-                    "Faltas": faltas
+                    "Data": DateFormat('dd/MM/y').format(data).toString()
                   });
                 }
 
-                void criarJogoPerdido(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoPerdido(DateTime data, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Perdidos").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
                     "Nome do jogo": jogo,
-                    "Faltas": faltas
+                    "Data": DateFormat('dd/MM/y').format(data).toString()
                   });
                 }
 
-                void criarJogoEmpate(int faltas, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
+                void criarJogoEmpate(DateTime data, String user, String jogo, String resultado, String campo, String timeadv, String golstime, String golsadv,){
                   Firestore.instance.collection("Usuarios").document(user).collection("Empates").document(jogo.toString()).setData({
                     "Campo": campo,
                     "Gols do time": golstime,
                     "Gols do adversário": golsadv,
                     "Resultado": resultado,
                     "Nome do jogo": jogo,
-                    "Faltas": faltas
+                    "Data": DateFormat('dd/MM/y').format(data).toString()
                   });
                 }
 
@@ -170,10 +173,28 @@ class _EscalarState extends State<Escalar> {
                   for (var item in jogadores) {
                     Firestore.instance.collection("Usuarios").document(user).collection("Historico").document(jogo.toString()).collection("Jogadores").document(item).setData(
                       {
-                        "Nome": item
+                        "Nome": item,
                       }
                     );
                   }
+                }
+
+                selecionarData(){
+                  showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2019),
+                    lastDate: DateTime.now()
+                    ).then((data){
+                      if(data == null){
+                        return;
+                      }
+                      else{
+                        setState(() {
+                          dataSelecionada = data;
+                        });
+                      }
+                    });
                 }
 
                 dialogo(){
@@ -183,6 +204,25 @@ class _EscalarState extends State<Escalar> {
                       contentPadding: EdgeInsets.all(20),
                       title: Text("Time de fantasmas?"),
                       content: Text("Adicione jogadores!", style: TextStyle(fontSize: 20),),
+                      actions: <Widget>[
+                        FlatButton(
+                          onPressed: (){
+                            Navigator.pop(context);
+                          },
+                          child: Text("Ok"),
+                        )
+                      ],
+                    )
+                  );
+                }
+
+                dialogoData(){
+                  showDialog(
+                    context: context,
+                    child: AlertDialog(
+                      contentPadding: EdgeInsets.all(20),
+                      title: Text("Dia"),
+                      content: Text("Adicione um dia para o seu jogo", style: TextStyle(fontSize: 20),),
                       actions: <Widget>[
                         FlatButton(
                           onPressed: (){
@@ -227,14 +267,22 @@ class _EscalarState extends State<Escalar> {
                           ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(10),
-                            child: Column(
+                            margin: EdgeInsets.only(left: 10, right: 10),
+                            child: ExpansionTile(
+                              backgroundColor: Colors.blue,
+                              leading: CircleAvatar(child: Image.asset("assets/jogadores.png"),),
+                              trailing: Icon(Icons.arrow_drop_down, color: Colors.white,),
+                              title: Card(       
+                                elevation: 5,     
+                                color: Colors.blue,                        
+                                child: Text("Jogadores", style: TextStyle(color: Colors.white, fontSize: 20),),
+                              ),
                               children: snapshot.data.documents.map(
-                              (doc){
-                                return BancoEscalar(doc);
-                              }).toList(),
-                                )
+                                  (doc){
+                                    return BancoEscalar(doc);
+                                  }).toList(),                            
                             ),
+                          ),
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -264,9 +312,10 @@ class _EscalarState extends State<Escalar> {
                                       hintText: "Nome do jogo",
                                       hintStyle: TextStyle(color: Colors.white),
                                       labelStyle: TextStyle(color: Colors.white),
-                                      contentPadding: EdgeInsets.only(left: 10)
+                                      contentPadding: EdgeInsets.only(left: 10),
+                                      suffixStyle: TextStyle(color: Colors.white)
                                     ),
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.white),
                                     cursorColor: Colors.white,
                                     keyboardType: TextInputType.text,
                                     validator: (text){
@@ -378,38 +427,40 @@ class _EscalarState extends State<Escalar> {
                                       } return null;
                                     },
                                   ),
-                                  SizedBox(height: 10,),
-                                  
+                                  SizedBox(height: 10,),                                  
                                 ],
                               )
                             ),
+                            SizedBox(height: 10,),
                             Container(
                               margin: EdgeInsets.only(left: 10, right: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.blue,
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(width: 1)
-                              ),
-                              child: TextFormField(
-                                    controller: faltas,
-                                    decoration: InputDecoration(
-                                      hintText: "Quantas faltas?",
-                                      hintStyle: TextStyle(color: Colors.white),
-                                      contentPadding: EdgeInsets.only(left: 10)
+                              child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Container(                                        
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(5)
+                                        ),
+                                        child: Center(
+                                          child: Text(dataSelecionada == null ? "Nenhuma data selecionada"
+                                          : DateFormat('dd/MM/y').format(dataSelecionada).toString(), style: TextStyle(color: Colors.blue),),
+                                        ),
+                                      )
                                     ),
-                                    style: TextStyle(color: Colors.black),
-                                    cursorColor: Colors.blue,
-                                    keyboardType: TextInputType.number,
-                                    validator: (text){
-                                      if (text.isEmpty){
-                                        return "Preencha!";
-                                      } return null;
-                                    }, 
-                                  ),
+                                    SizedBox(width: 10),
+                                    FlatButton(
+                                      color: Colors.blue,
+                                      onPressed: selecionarData,
+                                      child: Text("Selecionar data", style: TextStyle(color: Colors.white),)
+                                      )
+                                  ],
+                                ),
                             ),
                             SizedBox(height: 10,),
                             Container(
-                              height: 40,
+                              height: 60,
                               margin: EdgeInsets.only(left: 10, right: 10),
                               child: RaisedButton(
                               color: Colors.blue,
@@ -420,33 +471,56 @@ class _EscalarState extends State<Escalar> {
                               onPressed: (){
                                 if(jogadores.length == 0){
                                   dialogo();
-                                } 
+                                }
+                                if(dataSelecionada == null){
+                                  dialogoData();
+                                }
                                 if(_formkey.currentState.validate()){
-                                  int faltascerto = int.parse(faltas.text);
                                   if(_itemResultdo == "Vitória"){
-                                    criarJogoGanho(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogoGanho(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
                                     criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
                                     resetCamps();
                                     Navigator.pop(context);
+                                    myInterstitial
+                                      ..load()
+                                      ..show(
+                                        anchorType: AnchorType.bottom,
+                                        anchorOffset: 0.0,
+                                        horizontalCenterOffset: 0.0,
+                                      );
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) => Historico())
                                     );
                                 } else if(_itemResultdo == "Derrota"){
-                                    criarJogoPerdido(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogoPerdido(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
                                     criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
                                     resetCamps();
                                     Navigator.pop(context);
+                                    myInterstitial
+                                      ..load()
+                                      ..show(
+                                        anchorType: AnchorType.bottom,
+                                        anchorOffset: 0.0,
+                                        horizontalCenterOffset: 0.0,
+                                      );
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) => Historico())
                                     );
                                 } else {
-                                    criarJogoEmpate(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
-                                    criarJogo(faltascerto, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogoEmpate(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
+                                    criarJogo(dataSelecionada, model.firebaseUser.uid,jogo.text, _itemResultdo, controllador.text, timeadv.text, _itemSelecionadonosso, _itemSelecionadodeles);
                                     criarJoga(model.firebaseUser.uid,jogo.text, jogadores);
                                     resetCamps();
                                     Navigator.pop(context);
+                                    myInterstitial
+                                      ..load()
+                                      ..show(
+                                        anchorType: AnchorType.bottom,
+                                        anchorOffset: 0.0,
+                                        horizontalCenterOffset: 0.0,
+                                      );
                                     Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) => Historico())
                                     );
@@ -459,7 +533,7 @@ class _EscalarState extends State<Escalar> {
                             ),
                             SizedBox(height: 10,),
                             Container(
-                              height: 40,
+                              height: 60,
                               margin: EdgeInsets.only(left: 10, right: 10),
                               child: RaisedButton(
                               color: Colors.red,
@@ -469,6 +543,13 @@ class _EscalarState extends State<Escalar> {
                               ),
                               onPressed: (){
                                 resetCamps();
+                                myInterstitial
+                                      ..load()
+                                      ..show(
+                                        anchorType: AnchorType.bottom,
+                                        anchorOffset: 0.0,
+                                        horizontalCenterOffset: 0.0,
+                                      );
                                 Navigator.pop(context);
                               },
                             ),
@@ -558,7 +639,7 @@ class BancoEscalar extends StatelessWidget {
     return Column(
       children: <Widget>[
         Card(
-          color: Colors.blue,
+          color: Colors.white,
           elevation: 10,
           child: Container(
             margin: EdgeInsets.all(10),
@@ -570,8 +651,8 @@ class BancoEscalar extends StatelessWidget {
                     backgroundColor: Colors.transparent,
                     backgroundImage: NetworkImage(snapshot.data["img"]),
                   ),
-                  title: Text(snapshot.data["Nome"], style: TextStyle(color: Colors.white),),
-                  trailing: Text("Nº ${snapshot.data['Nº da camisa']}", style: TextStyle(color: Colors.white),),
+                  title: Text(snapshot.data["Nome"], style: TextStyle(color: Colors.black),),
+                  trailing: Text("Nº ${snapshot.data['Nº da camisa']}", style: TextStyle(color: Colors.black),),
                   onTap: (){
                     if(jogadores.contains(snapshot.documentID)){
                       dialogo();
@@ -587,8 +668,8 @@ class BancoEscalar extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Escalação: ${snapshot.data['Escalado']}", style: TextStyle(color: Colors.white),),
-                    Text("Posição ${snapshot.data['Posição']}", style: TextStyle(color: Colors.white),),
+                    Text("Escalação: ${snapshot.data['Escalado']}", style: TextStyle(color: Colors.black),),
+                    Text("Posição ${snapshot.data['Posição']}", style: TextStyle(color: Colors.black),),
                   ],
                 )
               ],
@@ -600,3 +681,23 @@ class BancoEscalar extends StatelessWidget {
     );
   }
 }
+
+MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+  keywords: <String>['football', 'game'],
+  contentUrl: 'https://flutter.io',
+  childDirected: false,
+  testDevices: <String>[], // Android emulators are considered test devices
+);
+
+
+
+InterstitialAd myInterstitial = InterstitialAd(
+  // Replace the testAdUnitId with an ad unit id from the AdMob dash.
+  // https://developers.google.com/admob/android/test-ads
+  // https://developers.google.com/admob/ios/test-ads
+  adUnitId: "ca-app-pub-4735870394464769/2267007201",
+  targetingInfo: targetingInfo,
+  listener: (MobileAdEvent event) {
+    print("InterstitialAd event is $event");
+  },
+);

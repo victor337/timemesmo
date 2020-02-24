@@ -27,7 +27,7 @@ class _MenuState extends State<Menu> {
         child: AlertDialog(
           contentPadding: EdgeInsets.all(20),
           title: Text("Tudo certo!"),
-          content: Text("Foto enviada!", style: TextStyle(fontSize: 20),),
+          content: Text("Foto enviada! Saia desta aba e volte para recarregar", style: TextStyle(fontSize: 20),),
           actions: <Widget>[
             FlatButton(
               onPressed: (){
@@ -45,6 +45,12 @@ class _MenuState extends State<Menu> {
   void setImagem(File img){
       setState(() {
         imagem = img;
+      });
+    }
+
+    void setImagemdenovo(){
+      setState(() {
+        imagem = null;
       });
     }
 
@@ -86,6 +92,8 @@ class _MenuState extends State<Menu> {
                 ],
               );
             } else {
+
+
               return SingleChildScrollView(
                 child: Container(
                   child: Column(
@@ -165,7 +173,7 @@ class _MenuState extends State<Menu> {
                                                     border: Border.all(width: 1),
                                                     color: Colors.grey[300],
                                                   ),
-                                                  child: snapshot.data["img"] == null ? Center(child: imagem == null ? Text("Envie uma brasão") : Text("Brasão enviado")) : 
+                                                  child: snapshot.data["img"] == null ? Container(child: imagem == null ? Text("Envie um brasão") : Text("Brasão enviado")) : 
                                                   Container(height: 120, width: 120, child: CircleAvatar(backgroundImage: NetworkImage(snapshot.data["img"])),) 
                                                 ),
                                               ),
@@ -179,6 +187,8 @@ class _MenuState extends State<Menu> {
                                                   sendImgSt(model.firebaseUser.uid, "Brasão" , imagem);
                                                   model.notify();
                                                   fotoenviada();
+                                                  model.notify();
+                                                  setImagemdenovo();
                                                   model.notify();
                                                 }
                                                 
@@ -462,7 +472,7 @@ class JogadorTotal extends StatelessWidget {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model){
         return FutureBuilder<QuerySnapshot>(
-          future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Jogadores").getDocuments(),
+          future: Firestore.instance.collection("Usuarios").document(model.firebaseUser.uid).collection("Time").document("Jogadores").collection("Todos").getDocuments(),
           builder: (context, snapshot){
             if(!snapshot.hasData){
               return Center(
